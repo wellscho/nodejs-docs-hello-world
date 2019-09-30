@@ -10,12 +10,22 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
+- task: Docker@2
+  displayName: Build an image
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    repository: helloworld4
+    tags: $(Build.BuildId)
+    command: build
+    Dockerfile: Dockerfile
 
 - script: |
-    npm install
-    npm run build
+    echo "tttttttt"
+    docker images
+    #docker build --tag helloworld3:$BUILD_NUMBER .
+    docker login -u "wellscho" -p "qbl955123"
+    docker tag helloworld4:$(Build.BuildId) wellscho/helloworld4:$(Build.BuildId)
+    docker push wellscho/helloworld4:$(Build.BuildId)
+    #docker stop helloworld4 && docker rm helloworld4
+    #docker run --name helloworld4 -p 1338:1338 helloworld4:$BUILD_NUMBER node /var/www/w2/index.js &
   displayName: 'npm install and build'
+
