@@ -1,0 +1,28 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+		steps:
+		- task: Docker@2
+		displayName: Build an image
+		inputs:
+		repository: helloworld8
+		tags: $(Build.BuildId)
+		command: build
+		Dockerfile: Dockerfile
+    
+		- script: |
+		echo "enter script"
+		docker images
+		docker login -u "wellscho" -p "qbl955123"
+		docker tag helloworld8:$(Build.BuildId) wellscho/helloworld8:$(Build.BuildId)
+		docker push wellscho/helloworld8:$(Build.BuildId)
+		displayName: 'upload docker image'
+
